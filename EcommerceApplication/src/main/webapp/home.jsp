@@ -1,5 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+    <%@ page import="java.util.*" %>
+    <%@page import="com.chainsys.finalproject.model.User" %>
+    <% User user = (User) session.getAttribute("user");
+    boolean isLoggedIn = (user != null);
+   %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -89,9 +94,20 @@
             padding-left: 1px; /* Adjust padding as needed */
             padding-bottom: 6px;
         }
+        .view-products-button-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .view-products-button {
+            background: #007bff;
+        }
+        .view-products-button:hover {
+            background: #0056b3;
+        }
     </style>
 </head>
 <body>
+
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container-fluid">
             <div class="nav-left d-flex">
@@ -103,12 +119,15 @@
                     </a>
                 </div>
                 <div id="location">
-                    <form id="location-form" action="locationServlet" method="POST" class="d-flex align-items-center">
-                        <button class="btn" type="submit">
+                    
                             <i class="fa fa-map-marker" aria-hidden="true"></i>
-                        </button>
-                    </form>
+                        
                 </div>
+                <div><%if (isLoggedIn){ %>
+                <%String a = user.getAddress(); %>
+                <h6><%= a %></h6>
+                <%} %></div>
+     
                 <div id="glow-ingress-block">
                     <!-- User address will be displayed here -->
                     <!-- Replace with dynamic content from the servlet -->
@@ -121,18 +140,29 @@
                     <button class="btn btn-outline-success" type="submit">Search</button>
                 </form>
                 <div class="nav-icons">
+               
+              		<% if(isLoggedIn)
+              			if (user.isSeller()) { %>
+              		
                 	<form action="AddProduct.jsp" >
                         <button class="btn btn-secondary" type="submit" name="add_product"><i class="fa fa-plus"></i> Add Product</button>
                     </form>
+                   <%} 
+                   %>
+                    <%if (isLoggedIn && !user.isSeller()){ %>
                     <form action="SellerLogin.jsp" >
                         <button class="btn btn-secondary" type="submit" name="become_seller">Become a Seller</button>
                     </form>
+                    <%} %>
+                    <%if (!isLoggedIn) { %>
                     <form action="LoginForm.jsp">
                         <button class="btn btn-secondary" type="submit" name="login_signup">Login/Sign Up</button>
                     </form>
+                    <%} else {%>
                     <form action="LogoutServlet" method="post">
                         <button class="btn btn-secondary" type="submit" name="logout">Logout</button>
                     </form>
+                    <%} %>
                     <form action="AddProfile.jsp"  class="box">
                         <button class="btn btn-secondary" type="submit" name="profile"><i class="fa fa-user-plus"></i></button>
                     </form>
@@ -147,6 +177,11 @@
         </div>
     </nav>
 
+ <div class="view-products-button-container">
+        <form action="ViewProduct.jsp" method="get">
+            <button type="submit" class="view-products-button">View Products</button>
+        </form>
+    </div>
     <!-- Popup Script -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>

@@ -20,6 +20,8 @@ public class Product {
     private boolean isDeleted;
     private Timestamp createdAt;
     private Timestamp updatedAt;
+    private boolean available;
+    private int quantity;
     
     // Getters and Setters
     public int getProductId() {
@@ -149,6 +151,24 @@ public class Product {
     public void setUpdatedAt(Timestamp updatedAt) {
         this.updatedAt = updatedAt;
     }
+    
+    
+	public boolean isAvailable() {
+		return available;
+	}
+
+	public void setAvailable(boolean available) {
+		this.available = available;
+	}
+
+	
+	public int getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
 
 	public Product() {
 		
@@ -189,5 +209,14 @@ public class Product {
 				+ ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
 	}
     
-    
+	public Product(int productId, String productName, double productPrice, byte[] productImage, boolean available) {
+        this.productId = productId;
+        this.productName = productName;
+        this.productPrice = productPrice;
+        this.productImage = productImage;
+        this.available = available;
+    }
+	
+	
+	
 }

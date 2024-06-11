@@ -21,6 +21,7 @@ public class User {
     private String city;
     private String pincode;
 
+    
     // Getters and Setters
     public int getUserId() {
         return userId;
@@ -147,8 +148,8 @@ public class User {
 		this.city = city;
 		this.pincode = pincode;
 	}
-	public User(int userId2, String userName2, String userEmail2, String password2, boolean isSeller2) {
-	}
+	
+	
 	@Override
 	public String toString() {
 		return "User [userId=" + userId + ", userName=" + userName + ", userEmail=" + userEmail + ", password="
@@ -165,9 +166,10 @@ public class User {
         this.password = password;
     }
 	
+	public User() {
+		
+	}
     
-    public User() {
-    	
-    }
+    
 }
 

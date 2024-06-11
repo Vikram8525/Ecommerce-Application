@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.Random;
 import javax.mail.Message;
@@ -136,25 +137,40 @@ public class UserDAO {
     
     public User getUserByIdAndPassword(int userId, String password) throws SQLException {
         User user = null;
-        String query = "SELECT user_name, user_email,is_seller FROM users WHERE user_id = ? AND password = ?";
-        
+        String query = "SELECT user_id, user_name, user_email, password, created_at, updated_at, is_seller, is_deleted, num_items_bought, num_items_sold, wallet_balance, first_name, last_name, address, state, city, pincode FROM users WHERE user_id = ? AND password = ?";
+
         try (Connection conn = Connectivity.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
-            
+
             stmt.setInt(1, userId);
             stmt.setString(2, password);
-            
+
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
+                    int id = rs.getInt("user_id");
                     String userName = rs.getString("user_name");
                     String userEmail = rs.getString("user_email");
-                    boolean isSeller =rs.getBoolean("is_seller");
-                    user = new User(userId, userName, userEmail, password,isSeller);
-                    System.out.println(userName);
+                    String userPassword = rs.getString("password");
+                    Timestamp createdAt = rs.getTimestamp("created_at");
+                    Timestamp updatedAt = rs.getTimestamp("updated_at");
+                    boolean isSeller = rs.getBoolean("is_seller");
+                    boolean isDeleted = rs.getBoolean("is_deleted");
+                    int numItemsBought = rs.getInt("num_items_bought");
+                    int numItemsSold = rs.getInt("num_items_sold");
+                    double walletBalance = rs.getDouble("wallet_balance");
+                    String firstName = rs.getString("first_name");
+                    String lastName = rs.getString("last_name");
+                    String address = rs.getString("address");
+                    String state = rs.getString("state");
+                    String city = rs.getString("city");
+                    String pincode = rs.getString("pincode");
+
+                    user = new User(id, userName, userEmail, userPassword, createdAt, updatedAt, isSeller, isDeleted, numItemsBought, numItemsSold, walletBalance, firstName, lastName, address, state, city, pincode);
+                    System.out.println(isSeller);
                 }
             }
         }
-        
+
         return user;
     }
 }

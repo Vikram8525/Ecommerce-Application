@@ -39,35 +39,39 @@ public class LoginServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
-	 protected void doPost(HttpServletRequest request, HttpServletResponse response)
-	            throws ServletException, IOException {
-	        
-	        String userIdStr = request.getParameter("userId");
-	        String password = request.getParameter("password");
-	        
-	        if (userIdStr != null && !userIdStr.isEmpty() && password != null && !password.isEmpty()) {
-	            try {
-	                int userId = Integer.parseInt(userIdStr);
-	                UserDAO userDAO = new UserDAO();
-	                User user = userDAO.getUserByIdAndPassword(userId, password);
-	                if (user != null) {
-	                    // User authenticated, redirect to home page
-	                    HttpSession session = request.getSession();
-	                    session.setAttribute("user", user);
-	                    response.sendRedirect("home.jsp");
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+	        throws ServletException, IOException {
+
+	    String userIdStr = request.getParameter("userId");
+	    String password = request.getParameter("password");
+
+	    if (userIdStr != null && !userIdStr.isEmpty() && password != null && !password.isEmpty()) {
+	        try {
+	            int userId = Integer.parseInt(userIdStr);
+	            UserDAO userDAO = new UserDAO();
+	            User user = userDAO.getUserByIdAndPassword(userId, password);
+	            if (user != null) {
+	                HttpSession session = request.getSession();
+	                session.setAttribute("user", user);
+
+	                // Redirect to the originally requested URL
+	                String redirectUrl = (String) session.getAttribute("redirectUrl");
+	                if (redirectUrl != null) {
+	                    session.removeAttribute("redirectUrl");
+	                    response.sendRedirect(redirectUrl);
 	                } else {
-	                    // Show login failed notification using SweetAlert
-	                    response.sendRedirect("LoginForm.jsp?status=failed");
+	                    response.sendRedirect("home.jsp");
 	                }
-	            } catch (NumberFormatException e) {
-	                // userIdStr is not a valid integer
+	            } else {
 	                response.sendRedirect("LoginForm.jsp?status=failed");
-	            } catch (SQLException ex) {
-	                ex.printStackTrace();
-	                response.sendRedirect("LoginForm.jsp?status=error");
 	            }
-	        } else {
-	            response.sendRedirect("LoginForm.jsp?status=failed");
+	        } catch (NumberFormatException | SQLException e) {
+	            e.printStackTrace();
+	            response.sendRedirect("LoginForm.jsp?status=error");
 	        }
+	    } else {
+	        response.sendRedirect("LoginForm.jsp?status=failed");
 	    }
+	}
+
 }
