@@ -1,9 +1,38 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-    <%@ page import="java.util.*" %>
+    <%@ page import="java.util.Base64, java.sql.*, java.io.*, java.util.*, com.chainsys.finalproject.util.Connectivity" %>
     <%@page import="com.chainsys.finalproject.model.User" %>
     <% User user = (User) session.getAttribute("user");
     boolean isLoggedIn = (user != null);
+    
+    int cartItemCount = 0;
+    if (isLoggedIn) {
+        int userId = user.getUserId();
+        try (Connection conn = Connectivity.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(*) FROM Cart WHERE user_id = ?");
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                cartItemCount = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    int wishlistItemCount = 0;
+    if (isLoggedIn) {
+    	int userId = user.getUserId();
+    try (Connection conn = Connectivity.getConnection()) {
+        PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(*) FROM wishlist WHERE user_id = ?");
+        stmt.setInt(1, userId);
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) {
+            wishlistItemCount = rs.getInt(1);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    }
    %>
 <!DOCTYPE html>
 <html lang="en">
@@ -40,7 +69,7 @@
             color: #ffffff;
             display: flex;
             align-items: center;
-            margin-left: 20px;
+            margin-left: 5px;
         }
         #glow-ingress-block i {
             font-size: 2rem; /* Increased size */
@@ -105,6 +134,7 @@
             background: #0056b3;
         }
     </style>
+    
 </head>
 <body>
 
@@ -123,14 +153,13 @@
                             <i class="fa fa-map-marker" aria-hidden="true"></i>
                         
                 </div>
-                <div><%if (isLoggedIn){ %>
-                <%String a = user.getAddress(); %>
-                <h6><%= a %></h6>
-                <%} %></div>
+                
      
                 <div id="glow-ingress-block">
-                    <!-- User address will be displayed here -->
-                    <!-- Replace with dynamic content from the servlet -->
+                <%if (isLoggedIn){ %>
+                <%String a = user.getAddress(); %>
+                <h6><%= a %></h6>
+                <%} %>
                 </div>
             </div>
 
@@ -144,7 +173,7 @@
               		<% if(isLoggedIn)
               			if (user.isSeller()) { %>
               		
-                	<form action="AddProduct.jsp" >
+                	<form action="SellerViewProducts.jsp" >
                         <button class="btn btn-secondary" type="submit" name="add_product"><i class="fa fa-plus"></i> Add Product</button>
                     </form>
                    <%} 
@@ -166,10 +195,11 @@
                     <form action="AddProfile.jsp"  class="box">
                         <button class="btn btn-secondary" type="submit" name="profile"><i class="fa fa-user-plus"></i></button>
                     </form>
-                    <form action="wishlistServlet" method="POST">
+                    <form action="ViewWishlist.jsp" method="POST">
                         <button class="btn btn-secondary" type="submit" name="wishlist"><i class="fa fa-heart-o"></i></button>
                     </form>
-                    <form action="cartServlet" method="POST" class="box">
+                    
+                    <form action="ViewCart.jsp" class="box">
                         <button class="btn btn-secondary" type="submit" name="cart"><i class="fa fa-shopping-cart"></i></button>
                     </form>
                 </div>
@@ -204,6 +234,38 @@
                 });
             }
         <% } %>
+    </script>
+     <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function updateCartNotification(count) {
+                const cartButton = document.querySelector('.fa-shopping-cart');
+                if (count > 0) {
+                    const notification = document.createElement('span');
+                    notification.className = 'cart-notification';
+                    notification.textContent = count;
+                    cartButton.parentElement.appendChild(notification);
+                }
+            }
+            
+            updateCartNotification(<%= cartItemCount %>); // Update cart count on page load
+        });
+        
+        function updateWishlistNotification(count) {
+            const wishlistButton = document.querySelector('.fa-heart-o');
+            if (count > 0) {
+                const notification = document.createElement('span');
+                notification.className = 'wishlist-notification';
+                notification.textContent = count;
+                wishlistButton.parentElement.appendChild(notification);
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const wishlistItemCount = <%= wishlistItemCount %>;
+            updateWishlistNotification(wishlistItemCount);
+        });
+        
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

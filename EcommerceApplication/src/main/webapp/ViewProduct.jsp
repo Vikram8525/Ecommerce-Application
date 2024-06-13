@@ -24,6 +24,18 @@
     } catch (SQLException e) {
         e.printStackTrace();
     }
+    
+    int wishlistItemCount = 0;
+    try (Connection conn = Connectivity.getConnection()) {
+        PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(*) FROM wishlist WHERE user_id = ?");
+        stmt.setInt(1, userId);
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) {
+            wishlistItemCount = rs.getInt(1);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -244,10 +256,23 @@ body {
                 cartButton.parentElement.appendChild(notification);
             }
         }
-
+		
+        function updateWishlistNotification(count) {
+            const wishlistButton = document.querySelector('.fa-heart-o');
+            if (count > 0) {
+                const notification = document.createElement('span');
+                notification.className = 'wishlist-notification';
+                notification.textContent = count;
+                wishlistButton.parentElement.appendChild(notification);
+            }
+        }
+        
         document.addEventListener('DOMContentLoaded', function () {
             const cartItemCount = <%= cartItemCount %>;
             updateCartNotification(cartItemCount);
+            
+            const wishlistItemCount = <%= wishlistItemCount %>;
+            updateWishlistNotification(wishlistItemCount);
         });
     </script>
 </head>
@@ -272,7 +297,7 @@ body {
 						placeholder="Search" aria-label="Search">
 				</form>
 				<div class="nav-icons">
-					<form action="wishlistServlet" method="POST">
+					<form action="ViewWishlist.jsp">
 						<button class="btn btn-secondary" type="submit" name="wishlist">
 							<i class="fa fa-heart-o"></i>
 						</button>
@@ -471,7 +496,7 @@ body {
 		
                     <p>
                         
-		<form action="wishlistServlet" method="POST">
+		<form action="WishlistServlet" method="POST">
                             <input type="hidden" name="productId"
 				value="<%=productId%>">
                             <button class="add-to-wishlist"
