@@ -76,7 +76,7 @@ public class CartServlet extends HttpServlet {
 	            }
 
 	            // Check if the product is already in the cart for the user
-	            String checkCartQuery = "SELECT * FROM cart WHERE user_id = ? AND product_id = ?";
+	            String checkCartQuery = "SELECT * FROM cart WHERE user_id = ? AND product_id = ? AND is_bought = 0";
 	            boolean productExistsInCart = false;
 	            int currentQuantity = 0;
 	            try (PreparedStatement checkCartStmt = conn.prepareStatement(checkCartQuery)) {

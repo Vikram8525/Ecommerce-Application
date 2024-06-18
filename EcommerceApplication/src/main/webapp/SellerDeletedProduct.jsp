@@ -184,8 +184,8 @@
             </button>
         </form>
         
-        <form action="ViewProduct.jsp" method="GET">
-        <button type="submit" class="btn btn-outline-secondary">Back to Products</button>
+        <form action="SellerViewProducts.jsp" method="GET">
+        <button type="submit" class="btn btn-outline-secondary">Add Products</button>
     </form>
     </div>
 

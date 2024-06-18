@@ -84,11 +84,11 @@
                         <form id="loginForm" action="LoginServlet" method="POST">
                             <div class="form-group">
                                 <label for="userId">User ID</label>
-                                <input type="text" class="form-control" id="userId" name="userId" required>
+                                <input type="text" class="form-control" id="userId" name="userId" required pattern="[0-9]{4}">
                             </div>
                             <div class="form-group">
                                 <label for="password">Password</label>
-                                <input type="password" class="form-control" id="password" name="password" required>
+                                <input type="password" class="form-control" id="password" name="password" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?\">
                             </div>
                             <button type="submit" class="btn btn-primary">Login</button>
                         </form>

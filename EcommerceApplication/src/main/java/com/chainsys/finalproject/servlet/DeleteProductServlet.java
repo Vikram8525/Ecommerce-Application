@@ -49,6 +49,7 @@ public class DeleteProductServlet extends HttpServlet {
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, productId);
             int rowsDeleted = stmt.executeUpdate();
+            
             if (rowsDeleted > 0) {
                 response.sendRedirect("SellerViewProducts.jsp?status=deleted");
             } else {

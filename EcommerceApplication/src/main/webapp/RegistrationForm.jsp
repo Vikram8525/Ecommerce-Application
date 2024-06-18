@@ -71,19 +71,21 @@
             </div>
             <div class="mb-3">
                 <label for="user_name" class="form-label">User Name</label>
-                <input type="text" class="form-control" id="user_name" name="user_name" required>
+                <input type="text" class="form-control" id="user_name" name="user_name" required pattern="[a-zA-Z_]{3,20}"
+                >
             </div>
             <div class="mb-3">
                 <label for="user_email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="user_email" name="user_email" required>
+                <input type="email" class="form-control" id="user_email" name="user_email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                >
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="password" name="password" required>
+                <input type="password" class="form-control" id="password" name="password" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?\">
             </div>
             <div class="mb-3">
                 <label for="confirm_password" class="form-label">Confirm Password</label>
-                <input type="password" class="form-control" id="confirm_password" required>
+                <input type="password" class="form-control" id="confirm_password" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?\">
             </div>
             <button type="submit" class="btn btn-primary">Register</button>
         </form>
@@ -104,7 +106,7 @@
                 })
                 .catch(error => console.error('Error:', error));
         }
-        
+
         document.getElementById('registrationForm').addEventListener('submit', function(e) {
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirm_password').value;
@@ -135,6 +137,8 @@
         if (registration === 'success') {
             showAlert('Success!', 'Registration successful.', 'success', 'IdMailServlet');
         } else if (registration === 'failure') {
+            showAlert('Error!', 'Registration failed. Please try again.', 'error', null);
+        } else if (registration === 'user_exists') {
             showAlert('Error!', 'User ID or email already exists.', 'error', null);
         }
 

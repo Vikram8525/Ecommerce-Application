@@ -30,34 +30,34 @@ public class IdMailServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Retrieve user details from the database
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         User user = new User();
-        user.setUserId(Integer.parseInt(request.getParameter("user_id"))); // Ensure user_id is properly retrieved
-        user.setUserName(request.getParameter("user_name")); // Adjust based on your implementation
-        user.setUserEmail(request.getParameter("user_email")); // Adjust based on your implementation
+        user.setUserId(Integer.parseInt(request.getParameter("user_id")));
+        user.setUserName(request.getParameter("user_name"));
+        user.setUserEmail(request.getParameter("user_email"));
 
         UserDAO userDao = new UserDAO();
         boolean isEmailSent = userDao.sendWelcomeEmail(user);
         if (isEmailSent) {
-            response.sendRedirect("home.jsp");
+            response.sendRedirect("home.jsp?registration=success");
         } else {
-            String errorMessage = "Error sending welcome email!";
-            response.setContentType("text/html");
-            PrintWriter out = response.getWriter();
-            out.println("<script type=\"text/javascript\">");
-            out.println("alert('" + errorMessage + "');");
-            out.println("window.location.href='home.jsp';");
-            out.println("</script>");
+            handleEmailError(response);
         }
     }
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doGet(request, response);
+    }
 
+    private void handleEmailError(HttpServletResponse response) throws IOException {
+        String errorMessage = "Error sending welcome email!";
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+        out.println("<script type=\"text/javascript\">");
+        out.println("alert('" + errorMessage + "');");
+        out.println("window.location.href='Home.jsp';");
+        out.println("</script>");
+    }
 }

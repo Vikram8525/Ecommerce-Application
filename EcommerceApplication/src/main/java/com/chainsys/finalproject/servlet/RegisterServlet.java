@@ -38,7 +38,8 @@ public class RegisterServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         User user = new User();
         user.setUserId(Integer.parseInt(request.getParameter("user_id")));
         user.setUserName(request.getParameter("user_name"));
@@ -47,12 +48,15 @@ public class RegisterServlet extends HttpServlet {
 
         UserDAO userDao = new UserDAO();
         try {
-            boolean isRegistered = userDao.addUser(user);
-            if (isRegistered) {
-                // Redirect to IdMailServlet with user_id parameter
-                response.sendRedirect("IdMailServlet?user_id=" + user.getUserId() + "&registration=success");
+            if (userDao.isUserExists(user.getUserEmail(), user.getUserId())) {
+                response.sendRedirect("RegistrationForm.jsp?registration=user_exists");
             } else {
-                response.sendRedirect("register.jsp?registration=failure");
+                boolean isRegistered = userDao.addUser(user);
+                if (isRegistered) {
+                    response.sendRedirect("IdMailServlet?user_id=" + user.getUserId() + "&registration=success");
+                } else {
+                    response.sendRedirect("RegistrationForm.jsp?registration=failure");
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();

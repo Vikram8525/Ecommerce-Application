@@ -16,6 +16,7 @@
 <link
 	href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
 	rel="stylesheet">
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
 body {
 	padding-top: 70px; /* Ensure the navbar doesn't overlap the content */
@@ -235,23 +236,23 @@ body {
 	</nav>
 
 	<div class="container mt-5">
-		<h2 class="mb-4">Additional details</h2>
+		<h2 class="mb-4">Address details for Your orders</h2>
 		<form action="ProfileServlet" method="POST">
 			<div class="form-group">
 				<label for="user_id">User ID</label> <input type="text"
-					class="form-control" id="user_id" name="user_id" required>
+					class="form-control" id="user_id" name="user_id" required >
 			</div>
 			<div class="form-group">
 				<label for="first_name">First Name</label> <input type="text"
-					class="form-control" id="first_name" name="first_name" required>
+					class="form-control" id="first_name" name="first_name" required pattern="[a-zA-Z_]{3,20}">
 			</div>
 			<div class="form-group">
 				<label for="last_name">Last Name</label> <input type="text"
-					class="form-control" id="last_name" name="last_name" required>
+					class="form-control" id="last_name" name="last_name" required pattern="[a-zA-Z_]{3,20}">
 			</div>
 			<div class="form-group">
 				<label for="address">Address</label> <input type="text"
-					class="form-control" id="address" name="address" required>
+					class="form-control" id="address" name="address" required pattern=".{3,100}">
 			</div>
 			<div class="form-group">
 				<label for="state">State</label> <select class="form-control"
@@ -291,5 +292,25 @@ body {
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
 		crossorigin="anonymous"></script>
+		
+		 <script type="text/javascript">
+        var updateStatus = '<%= request.getParameter("updateStatus") %>';
+
+        if (updateStatus === 'success') {
+            Swal.fire({
+                icon: 'success',
+                title: 'Profile Updated Successfully!',
+                text: 'Your profile has been updated successfully.',
+                allowOutsideClick: false
+            });
+        } else if (updateStatus === 'failure') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Failed to Update Profile!',
+                text: 'Something went wrong while updating your profile. Please try again later.',
+                allowOutsideClick: false
+            });
+        }
+    </script>
 </body>
 </html>

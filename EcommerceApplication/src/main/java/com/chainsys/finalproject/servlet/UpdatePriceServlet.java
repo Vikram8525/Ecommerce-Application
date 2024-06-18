@@ -39,27 +39,26 @@ public class UpdatePriceServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int productId = Integer.parseInt(request.getParameter("productId"));
-        int newPrice = Integer.parseInt(request.getParameter("newPrice"));
-        
-        // Perform the database update operation here
-        
-        try (Connection conn = Connectivity.getConnection()) {
-            String sql = "UPDATE Products SET product_price = ? WHERE product_id = ?";
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setInt(1, newPrice);
-            stmt.setInt(2, productId);
-            int rowsUpdated = stmt.executeUpdate();
-            if (rowsUpdated > 0) {
-                response.sendRedirect("SellerViewProducts.jsp?status=success");
-            } else {
-                response.sendRedirect("SellerViewProducts.jsp?status=failed");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            response.sendRedirect("SellerViewProducts.jsp?status=failed");
-        }
-    }
+	 protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	        int productId = Integer.parseInt(request.getParameter("productId"));
+	        double newPrice = Double.parseDouble(request.getParameter("newPrice"));
 
+	        // Perform the database update operation here
+
+	        try (Connection conn = Connectivity.getConnection()) {
+	            String sql = "UPDATE Products SET product_price = ? WHERE product_id = ?";
+	            PreparedStatement stmt = conn.prepareStatement(sql);
+	            stmt.setDouble(1, newPrice);
+	            stmt.setInt(2, productId);
+	            int rowsUpdated = stmt.executeUpdate();
+	            if (rowsUpdated > 0) {
+	                response.sendRedirect("SellerViewProducts.jsp?status=success");
+	            } else {
+	                response.sendRedirect("SellerViewProducts.jsp?status=failed");
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	            response.sendRedirect("SellerViewProducts.jsp?status=failed");
+	        }
+	    }
 }

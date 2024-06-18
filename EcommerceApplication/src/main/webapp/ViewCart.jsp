@@ -185,7 +185,7 @@
         </form>
         
         <form action="ViewProduct.jsp" method="GET">
-        <button type="submit" class="btn btn-outline-secondary">Back to Products</button>
+        <button type="submit" class="btn btn-outline-secondary">View All Products</button>
     </form>
     </div>
 
@@ -209,7 +209,7 @@
 
         try (Connection conn = Connectivity.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement("SELECT c.*, p.product_name, p.product_image, p.product_price, p.product_quantity " +
-                                                           "FROM Cart c JOIN Products p ON c.product_id = p.product_id WHERE c.user_id = ?");
+                                                           "FROM Cart c JOIN Products p ON c.product_id = p.product_id WHERE c.user_id = ? AND c.is_bought = 0");
             stmt.setInt(1, userId);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
@@ -256,9 +256,11 @@
         </div>
         <div class="mt-4">
             <h3>Total Amount: Rs.<%= totalAmount %></h3>
-            <form action="CheckoutServlet" method="POST">
-                <button type="submit" class="btn btn-success">Proceed to Checkout</button>
-            </form>
+            <form action="OrderDetails.jsp" method="POST">
+    <input type="hidden" name="userId" value="<%= userId %>">
+    <button type="submit" class="btn btn-success">Proceed to Checkout</button>
+</form>
+
         </div>
     <% } %>
 </div>

@@ -15,7 +15,7 @@
     int userId = currentUser.getUserId();
     int cartItemCount = 0;
     try (Connection conn = Connectivity.getConnection()) {
-        PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(*) FROM Cart WHERE user_id = ?");
+        PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(*) FROM Cart WHERE user_id = ? AND is_bought = 0");
         stmt.setInt(1, userId);
         ResultSet rs = stmt.executeQuery();
         if (rs.next()) {
@@ -414,7 +414,7 @@ body {
 			}
 		}
 
-		StringBuilder query = new StringBuilder("SELECT * FROM Products WHERE product_price BETWEEN ? AND ? AND is_deleted = 0");
+		StringBuilder query = new StringBuilder("SELECT * FROM Products WHERE product_price BETWEEN ? AND ? AND is_deleted = 0 ");
 		if (productType != null && !productType.isEmpty()) {
 			query.append(" AND category_name = ?");
 		}

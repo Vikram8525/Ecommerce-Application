@@ -184,8 +184,8 @@
             </button>
         </form>
         
-        <form action="ViewProduct.jsp" method="GET">
-        <button type="submit" class="btn btn-outline-secondary">Back to Products</button>
+        <form action=SellerDeletedProduct.jsp method="GET">
+        <button type="submit" class="btn btn-outline-secondary">Your Bin Products</button>
     </form>
     </div>
 
@@ -268,11 +268,6 @@
             <button type="submit" class="btn btn-primary">Add New Product</button>
         </form>
     </div>
-    <div class="mt-4">
-    <form action="SellerDeletedProduct.jsp">
-            <button type="submit" class="btn btn-primary">Add Deleted Product again</button>
-        </form>
-        </div>
 </div>
 
 <script src="vendor/jquery/jquery.min.js"></script>

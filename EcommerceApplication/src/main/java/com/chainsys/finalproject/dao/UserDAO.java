@@ -173,4 +173,16 @@ public class UserDAO {
 
         return user;
     }
+    public boolean isUserExists(String userEmail, int userId) throws SQLException {
+        String query = "SELECT user_id FROM users WHERE user_email = ? OR user_id = ?";
+        try (Connection conn = Connectivity.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, userEmail);
+            stmt.setInt(2, userId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next();
+            }
+        }
+    }
+
 }
