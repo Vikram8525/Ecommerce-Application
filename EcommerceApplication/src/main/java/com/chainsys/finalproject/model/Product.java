@@ -172,7 +172,7 @@ public class Product {
 
 	public Product() {
 		
-		// TODO Auto-generated constructor stub
+
 	}
 
 	public Product(int productId, int userId, String sellerName, String categoryName, String productName,

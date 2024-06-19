@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ page import="java.util.Base64, java.sql.*, java.io.*, java.util.*, com.chainsys.finalproject.util.Connectivity, java.text.SimpleDateFormat" %>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <title>Product Details</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
@@ -135,7 +135,7 @@
                                 String base64Image = imageBase64List.get(i);
                         %>
                                 <div class="carousel-item <%= i == 0 ? "active" : "" %>">
-                                    <img src="data:image/jpeg;base64,<%= base64Image %>" class="d-block w-100" alt="Product Image <%= i + 1 %>">
+                                    <img src="data:image/jpeg;base64,<%= base64Image %>" class="d-block w-100" alt="Product <%= i + 1 %>">
                                 </div>
                         <%
                             }

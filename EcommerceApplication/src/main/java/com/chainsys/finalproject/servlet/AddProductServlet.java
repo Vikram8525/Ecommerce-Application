@@ -2,7 +2,7 @@ package com.chainsys.finalproject.servlet;
 
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.Base64;
+
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -27,30 +27,28 @@ public class AddProductServlet extends HttpServlet {
      */
     public AddProductServlet() {
         super();
-        // TODO Auto-generated constructor stub
+
     }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+    @Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
+	
+	private static final String MESSAGE_ATTRIBUTE = "message";
+	private static final String STATUS_ATTRIBUTE = "status";
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            // Debugging: Print incoming parameters
-            System.out.println("User ID: " + request.getParameter("user_id"));
-            System.out.println("Seller Name: " + request.getParameter("seller_name"));
-            System.out.println("Category Name: " + request.getParameter("category_name"));
-            System.out.println("Product Name: " + request.getParameter("product_name"));
-            System.out.println("Product Price: " + request.getParameter("product_price"));
-            System.out.println("Product Description: " + request.getParameter("product_description"));
-            System.out.println("Product Quantity: " + request.getParameter("product_quantity"));
+
 
             int userId = Integer.parseInt(request.getParameter("user_id"));
             String sellerName = request.getParameter("seller_name");
@@ -86,15 +84,15 @@ public class AddProductServlet extends HttpServlet {
             boolean isProductAdded = productDAO.addProduct(product);
 
             if (isProductAdded) {
-                request.setAttribute("status", "success");
-                request.setAttribute("message", "Product added successfully!");
+                request.setAttribute(STATUS_ATTRIBUTE, "success");
+                request.setAttribute(MESSAGE_ATTRIBUTE, "Product added successfully!");
             } else {
-                request.setAttribute("status", "error");
-                request.setAttribute("message", "Failed to add product.");
+                request.setAttribute(STATUS_ATTRIBUTE, "error");
+                request.setAttribute(MESSAGE_ATTRIBUTE, "Failed to add product.");
             }
         } catch (Exception e) {
-            request.setAttribute("status", "error");
-            request.setAttribute("message", "Error: " + e.getMessage());
+            request.setAttribute(STATUS_ATTRIBUTE, "error");
+            request.setAttribute(MESSAGE_ATTRIBUTE, "Error: " + e.getMessage());
             e.printStackTrace();
         }
 

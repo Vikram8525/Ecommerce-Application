@@ -21,28 +21,36 @@ public class CartBuyNowServlet extends HttpServlet {
      */
     public CartBuyNowServlet() {
         super();
-        // TODO Auto-generated constructor stub
+
     }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+    @Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
+	
+	private static final String FAILED_ATTRIBUTE = "failed";
+	private static final String MESSAGE_ATTRIBUTE = "message";
+	private static final String STATUS_ATTRIBUTE = "status";
+	private static final String ORDER_ATTRIBUTE = "OrderConfirmation.jsp";
+	private static final String SUCCESS_ATTRIBUTE = "Success";
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String userIdStr = request.getParameter("userId");
         String paymentMethod = request.getParameter("paymentMethod");
 
         if (userIdStr == null || userIdStr.isEmpty()) {
-            request.setAttribute("status", "failed");
-            request.setAttribute("message", "User ID is missing.");
-            request.getRequestDispatcher("OrderConfirmation.jsp").forward(request, response);
+            request.setAttribute(STATUS_ATTRIBUTE, FAILED_ATTRIBUTE);
+            request.setAttribute(MESSAGE_ATTRIBUTE, "User ID is missing.");
+            request.getRequestDispatcher(ORDER_ATTRIBUTE).forward(request, response);
             return;
         }
 
@@ -50,9 +58,9 @@ public class CartBuyNowServlet extends HttpServlet {
         try {
             userId = Integer.parseInt(userIdStr);
         } catch (NumberFormatException e) {
-            request.setAttribute("status", "failed");
-            request.setAttribute("message", "Invalid User ID.");
-            request.getRequestDispatcher("OrderConfirmation.jsp").forward(request, response);
+            request.setAttribute(STATUS_ATTRIBUTE, FAILED_ATTRIBUTE);
+            request.setAttribute(MESSAGE_ATTRIBUTE, "Invalid User ID.");
+            request.getRequestDispatcher(ORDER_ATTRIBUTE).forward(request, response);
             return;
         }
 
@@ -60,70 +68,70 @@ public class CartBuyNowServlet extends HttpServlet {
 
         // Step 1: Check wallet balance
         String balanceStatus = cartBuyNowDAO.checkWalletBalance(userId);
-        if (!"Success".equals(balanceStatus)) {
-            request.setAttribute("status", "failed");
-            request.setAttribute("message", balanceStatus);
-            request.getRequestDispatcher("OrderConfirmation.jsp").forward(request, response);
+        if (!SUCCESS_ATTRIBUTE.equals(balanceStatus)) {
+            request.setAttribute(STATUS_ATTRIBUTE, FAILED_ATTRIBUTE);
+            request.setAttribute(MESSAGE_ATTRIBUTE, balanceStatus);
+            request.getRequestDispatcher(ORDER_ATTRIBUTE).forward(request, response);
             return;
         }
 
         // Step 2: Update product quantities and user statistics
         String updateStatus = cartBuyNowDAO.updateProductQuantities(userId);
-        if (!"Success".equals(updateStatus)) {
-            request.setAttribute("status", "failed");
-            request.setAttribute("message", updateStatus);
-            request.getRequestDispatcher("OrderConfirmation.jsp").forward(request, response);
+        if (!SUCCESS_ATTRIBUTE.equals(updateStatus)) {
+            request.setAttribute(STATUS_ATTRIBUTE, FAILED_ATTRIBUTE);
+            request.setAttribute(MESSAGE_ATTRIBUTE, updateStatus);
+            request.getRequestDispatcher(ORDER_ATTRIBUTE).forward(request, response);
             return;
         }
 
         // Step 3: Fill order details
         String orderNumber = cartBuyNowDAO.generateOrderNumber();
         String orderStatus = cartBuyNowDAO.fillOrderDetails(userId, orderNumber);
-        if (!"Success".equals(orderStatus)) {
-            request.setAttribute("status", "failed");
-            request.setAttribute("message", orderStatus);
-            request.getRequestDispatcher("OrderConfirmation.jsp").forward(request, response);
+        if (!SUCCESS_ATTRIBUTE.equals(orderStatus)) {
+            request.setAttribute(STATUS_ATTRIBUTE, FAILED_ATTRIBUTE);
+            request.setAttribute(MESSAGE_ATTRIBUTE, orderStatus);
+            request.getRequestDispatcher(ORDER_ATTRIBUTE).forward(request, response);
             return;
         }
 
         // Step 4: Fill payment details
         String paymentStatus = cartBuyNowDAO.fillPaymentDetails(userId, orderNumber, paymentMethod);
-        if (!"Success".equals(paymentStatus)) {
-            request.setAttribute("status", "failed");
-            request.setAttribute("message", paymentStatus);
-            request.getRequestDispatcher("OrderConfirmation.jsp").forward(request, response);
+        if (!SUCCESS_ATTRIBUTE.equals(paymentStatus)) {
+            request.setAttribute(STATUS_ATTRIBUTE, FAILED_ATTRIBUTE);
+            request.setAttribute(MESSAGE_ATTRIBUTE, paymentStatus);
+            request.getRequestDispatcher(ORDER_ATTRIBUTE).forward(request, response);
             return;
         }
 
         // Step 5: Update wallet balances
         String walletStatus = cartBuyNowDAO.updateWalletBalances(userId, orderNumber);
-        if (!"Success".equals(walletStatus)) {
-            request.setAttribute("status", "failed");
-            request.setAttribute("message", walletStatus);
-            request.getRequestDispatcher("OrderConfirmation.jsp").forward(request, response);
+        if (!SUCCESS_ATTRIBUTE.equals(walletStatus)) {
+            request.setAttribute(STATUS_ATTRIBUTE, FAILED_ATTRIBUTE);
+            request.setAttribute(MESSAGE_ATTRIBUTE, walletStatus);
+            request.getRequestDispatcher(ORDER_ATTRIBUTE).forward(request, response);
             return;
         }
 
         // Step 6: Mark items as bought
         String markItemsStatus = cartBuyNowDAO.markItemsAsBought(userId);
-        if (!"Success".equals(markItemsStatus)) {
-            request.setAttribute("status", "failed");
-            request.setAttribute("message", markItemsStatus);
-            request.getRequestDispatcher("OrderConfirmation.jsp").forward(request, response);
+        if (!SUCCESS_ATTRIBUTE.equals(markItemsStatus)) {
+            request.setAttribute(STATUS_ATTRIBUTE, FAILED_ATTRIBUTE);
+            request.setAttribute(MESSAGE_ATTRIBUTE, markItemsStatus);
+            request.getRequestDispatcher(ORDER_ATTRIBUTE).forward(request, response);
             return;
         }
 
         boolean emailStatus = cartBuyNowDAO.sendOrderEmails(userId, orderNumber);
         if (!emailStatus) {
-            request.setAttribute("status", "failed");
-            request.setAttribute("message", "Failed to send order emails.");
-            request.getRequestDispatcher("OrderConfirmation.jsp").forward(request, response);
+            request.setAttribute(STATUS_ATTRIBUTE, FAILED_ATTRIBUTE);
+            request.setAttribute(MESSAGE_ATTRIBUTE, "Failed to send order emails.");
+            request.getRequestDispatcher(ORDER_ATTRIBUTE).forward(request, response);
             return;
         }
 
         // Success
-        request.setAttribute("status", "success");
-        request.setAttribute("message", "Order placed successfully!");
+        request.setAttribute(STATUS_ATTRIBUTE, "success");
+        request.setAttribute(MESSAGE_ATTRIBUTE, "Order placed successfully!");
         request.setAttribute("orderNumber", orderNumber);
         request.getRequestDispatcher("OrderSuccess.jsp").forward(request, response);
     }

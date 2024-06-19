@@ -25,49 +25,59 @@ public class DeleteCartItemServlet extends HttpServlet {
      */
     public DeleteCartItemServlet() {
         super();
-        // TODO Auto-generated constructor stub
+
     }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+    @Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
+	private static final String FAILURE_MESSAGE = "failure";
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
-	 protected void doPost(HttpServletRequest request, HttpServletResponse response)
-	            throws ServletException, IOException {
-	        String cartIdStr = request.getParameter("cart_id");
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String cartIdStr = request.getParameter("cart_id");
 
-	        if (cartIdStr == null) {
-	            response.getWriter().write("failure");
-	            return;
-	        }
+        if (cartIdStr == null) {
+            response.getWriter().write(FAILURE_MESSAGE);
+            return;
+        }
 
-	        try {
-	            int cartId = Integer.parseInt(cartIdStr);
+        try {
+            int cartId = Integer.parseInt(cartIdStr);
+            boolean deletionSuccess = deleteCart(cartId);
 
-	            try (Connection conn = Connectivity.getConnection()) {
-	                PreparedStatement stmt = conn.prepareStatement("DELETE FROM Cart WHERE cart_id = ?");
-	                stmt.setInt(1, cartId);
-	                int rowsDeleted = stmt.executeUpdate();
+            if (deletionSuccess) {
+                response.getWriter().write("success");
+            } else {
+                response.getWriter().write(FAILURE_MESSAGE);
+            }
 
-	                if (rowsDeleted > 0) {
-	                    response.getWriter().write("success");
-	                } else {
-	                    response.getWriter().write("failure");
-	                }
-	            } catch (SQLException e) {
-	                e.printStackTrace();
-	                response.getWriter().write("failure");
-	            }
-	        } catch (NumberFormatException e) {
-	            e.printStackTrace();
-	            response.getWriter().write("failure");
-	        }
-	    }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            response.getWriter().write(FAILURE_MESSAGE);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            response.getWriter().write(FAILURE_MESSAGE);
+        }
+    }
+
+    private boolean deleteCart(int cartId) throws SQLException {
+        try (Connection conn = Connectivity.getConnection();
+             PreparedStatement stmt = conn.prepareStatement("DELETE FROM Cart WHERE cart_id = ?")) {
+            stmt.setInt(1, cartId);
+            int rowsDeleted = stmt.executeUpdate();
+            return rowsDeleted > 0;
+        }
+    }
+
+
 }

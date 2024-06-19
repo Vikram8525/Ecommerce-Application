@@ -46,14 +46,16 @@ public class UserDAO {
 	}
 
 
+	private static final Random RANDOM = new Random();
+
     public int generateUniqueUserId() throws SQLException {
         String query = "SELECT user_id FROM users WHERE user_id = ?";
-        Random random = new Random();
         int userId;
         boolean unique;
         do {
-            userId = 1000 + random.nextInt(9000);
-            try (Connection conn = Connectivity.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            userId = 1000 + RANDOM.nextInt(9000);
+            try (Connection conn = Connectivity.getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(query)) {
                 stmt.setInt(1, userId);
                 try (ResultSet rs = stmt.executeQuery()) {
                     unique = !rs.next();
@@ -62,10 +64,9 @@ public class UserDAO {
         } while (!unique);
         return userId;
     }
-
     public boolean sendWelcomeEmail(User user) {
-        final String username = "osonlineshopping614@gmail.com";
-        final String password = "eaer hvch jsje qspy";
+        final String username = "tarzan.shopping.in@gmail.com";
+        final String password = "zvhs waup gshd pert";
 
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
@@ -74,6 +75,7 @@ public class UserDAO {
         props.put("mail.smtp.port", "587");
 
         Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+            @Override
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(username, password);
             }

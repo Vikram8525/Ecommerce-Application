@@ -234,7 +234,7 @@
             <% for (Map<String, Object> product : products) { %>
                 <div class="col-md-4 mb-3">
                     <div class="card">
-                        <img src="data:image/jpeg;base64,<%= product.get("product_image") %>" class="card-img-top" alt="Product Image">
+                        <img src="data:image/jpeg;base64,<%= product.get("product_image") %>" class="card-img-top" alt="Product">
                         <div class="card-body">
                             <h5 class="card-title"><%= product.get("product_name") %></h5>
                             <p class="card-text">Price: Rs.<%= product.get("product_price") %></p>

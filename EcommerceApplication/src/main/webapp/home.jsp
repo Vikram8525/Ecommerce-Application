@@ -1,50 +1,61 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-    <%@ page import="java.util.Base64, java.sql.*, java.io.*, java.util.*, com.chainsys.finalproject.util.Connectivity" %>
-    <%@page import="com.chainsys.finalproject.model.User" %>
-    <% User user = (User) session.getAttribute("user");
-    boolean isLoggedIn = (user != null);
-    
-    int cartItemCount = 0;
-    if (isLoggedIn) {
-        int userId = user.getUserId();
-        try (Connection conn = Connectivity.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(*) FROM Cart WHERE user_id = ? and is_bought = 0");
-            stmt.setInt(1, userId);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                cartItemCount = rs.getInt(1);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-    int wishlistItemCount = 0;
-    if (isLoggedIn) {
-    	int userId = user.getUserId();
-    try (Connection conn = Connectivity.getConnection()) {
-        PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(*) FROM wishlist WHERE user_id = ?");
-        stmt.setInt(1, userId);
-        ResultSet rs = stmt.executeQuery();
-        if (rs.next()) {
-            wishlistItemCount = rs.getInt(1);
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-    }
-   %>
+	pageEncoding="UTF-8"%>
+<%@ page
+	import="java.util.Base64, java.sql.*, java.io.*, java.util.*, com.chainsys.finalproject.util.Connectivity"%>
+<%@page import="com.chainsys.finalproject.model.User"%>
+<%
+User user = (User) session.getAttribute("user");
+boolean isLoggedIn = (user != null);
+
+int cartItemCount = 0;
+if (isLoggedIn) {
+	int userId = user.getUserId();
+	try (Connection conn = Connectivity.getConnection()) {
+		PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(*) FROM Cart WHERE user_id = ? and is_bought = 0");
+		stmt.setInt(1, userId);
+		ResultSet rs = stmt.executeQuery();
+		if (rs.next()) {
+	cartItemCount = rs.getInt(1);
+		}
+	} catch (SQLException e) {
+		e.printStackTrace();
+	}
+}
+int wishlistItemCount = 0;
+if (isLoggedIn) {
+	int userId = user.getUserId();
+	try (Connection conn = Connectivity.getConnection()) {
+		PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(*) FROM wishlist WHERE user_id = ?");
+		stmt.setInt(1, userId);
+		ResultSet rs = stmt.executeQuery();
+		if (rs.next()) {
+	wishlistItemCount = rs.getInt(1);
+		}
+	} catch (SQLException e) {
+		e.printStackTrace();
+	}
+}
+%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Page</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
-    <style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Home Page</title>
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+	crossorigin="anonymous">
+<link
+	href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+	rel="stylesheet">
+<link
+	href="https://fonts.googleapis.com/css2?family=Poppins&display=swap"
+	rel="stylesheet">
+<style>
         body {
             padding-top: 70px; 
             font-family: 'Roboto', sans-serif;
@@ -288,151 +299,191 @@
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
-        <div class="container-fluid">
-            <div class="nav-left d-flex">
-                <div id="nav-logo">
-                    <a href="#" id="nav-logo-sprites" class="navbar-brand">
-                        <img src="homeImage/logo1.png" alt="Logo">
-                        <span id="logo-ext" class="nav-sprite nav-logo-ext"></span>
-                        <span class="nav-logo-locale">.in</span>
-                    </a>
-                </div>
-                <div id="location">
-                    <i class="fa fa-map-marker" aria-hidden="true"></i>
-                </div>
-                <div id="glow-ingress-block">
-                    <% if (isLoggedIn) { %>
-                        <%= user.getAddress() %>
-                    <% } %>
-                </div>
-            </div>
+	<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+		<div class="container-fluid">
+			<div class="nav-left d-flex">
+				<div id="nav-logo">
+					<a href="#" id="nav-logo-sprites" class="navbar-brand"> <img
+						src="homeImage/logo1.png" alt="Logo"> <span id="logo-ext"
+						class="nav-sprite nav-logo-ext"></span> <span
+						class="nav-logo-locale">.in</span>
+					</a>
+				</div>
+				<div id="location">
+					<i class="fa fa-map-marker" aria-hidden="true"></i>
+				</div>
+				<div id="glow-ingress-block">
+					<%
+					if (isLoggedIn) {
+					%>
+					<%=user.getAddress()%>
+					<%
+					}
+					%>
+				</div>
+			</div>
 
-            <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
-                <form class="d-flex mx-auto" action="searchServlet" method="POST" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
-                <div class="nav-icons">
-                    <% if (isLoggedIn && user.isSeller()) { %>
-                        <form action="SellerViewProducts.jsp">
-                            <button class="btn btn-secondary" type="submit" name="add_product"><i class="fa fa-plus"></i> Add Product</button>
-                        </form>
-                    <% } %>
-                    <% if (isLoggedIn && !user.isSeller()) { %>
-                        <form action="BecomeASeller.jsp">
-                            <button class="btn btn-secondary" type="submit" name="become_seller">Become a Seller</button>
-                        </form>
-                    <% } %>
-                    <% if (!isLoggedIn) { %>
-                        <form action="LoginForm.jsp">
-                            <button class="btn btn-secondary" type="submit" name="login_signup">Login/Sign Up</button>
-                        </form>
-                    <% } else { %>
-                        <form action="LogoutServlet" method="post">
-                            <button class="btn btn-secondary" type="submit" name="logout">Logout</button>
-                        </form>
-                    <% } %>
-                    <form action="AddProfile.jsp">
-                        <button class="btn btn-secondary" type="submit" name="profile"><i class="fa fa-user-plus"></i></button>
-                    </form>
-                    <form action="ViewCart.jsp">
-                        <button class="btn btn-secondary" type="submit" name="cart"><i class="fa fa-shopping-cart"></i></button>
-                    </form>
-                    <form action="wishlist.jsp">
-                        <button class="btn btn-secondary" type="submit" name="wishlist"><i class="fa fa-heart-o"></i></button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </nav>
-    
-    
-    <div class="container1">
-    <div class="banner">
-      <h5><img src="homeImage/logo1.png" alt="Logo Image">Logo Text</h5>
-      <div class="clouds">
-        <img src="https://i.postimg.cc/PrMrJc9d/cloud1.png" style="--i:1">
-        <img src="https://i.postimg.cc/fRTW9CQm/cloud2.png" style="--i:2">
-        <img src="https://i.postimg.cc/sg6j9W38/cloud3.png" style="--i:3">
-        <img src="https://i.postimg.cc/sg6j9W38/cloud3.png" style="--i:8">
-      </div>
-    </div>
-  </div>
-    
-    
-    
-    <div class="container">        
-        <div class="category-grid">
-            <form action="CategoryServlet" method="post" class="category-card">
-                <input type="hidden" name="category" value="Watch">
-                <button type="submit" style="background:none;border:none;padding:0;width:100%;height:100%;">
-                    <img src="homeImage/Watch.jpg" alt="Watch">
-                    <div class="event-info">
-                        <h3>Watch</h3>
-                        <p>Latest Collection</p>
-                    </div>
-                </button>
-            </form>
-            <form action="CategoryServlet" method="post" class="category-card">
-                <input type="hidden" name="category" value="Shoes">
-                <button type="submit" style="background:none;border:none;padding:0;width:100%;height:100%;">
-                    <img src="homeImage/Shoes.jpg" alt="Shoes">
-                    <div class="event-info">
-                        <h3>Shoes</h3>
-                        <p>Comfort and Style</p>
-                    </div>
-                </button>
-            </form>
-            <form action="CategoryServlet" method="post" class="category-card">
-                <input type="hidden" name="category" value="Anime">
-                <button type="submit" style="background:none;border:none;padding:0;width:100%;height:100%;">
-                    <img src="homeImage/Anime 1.jpg" alt="Anime Action Figure">
-                    <div class="event-info">
-                        <h3>Anime Action Figure</h3>
-                        <p>For Collectors</p>
-                    </div>
-                </button>
-            </form>
-            <form action="CategoryServlet" method="post" class="category-card">
-                <input type="hidden" name="category" value="Headphone">
-                <button type="submit" style="background:none;border:none;padding:0;width:100%;height:100%;">
-                    <img src="homeImage/Headphone.jpg" alt="Headphone">
-                    <div class="event-info">
-                        <h3>Headphone</h3>
-                        <p>Top Quality Sound</p>
-                    </div>
-                </button>
-            </form>
-            <form action="CategoryServlet" method="post" class="category-card">
-                <input type="hidden" name="category" value="Mobile">
-                <button type="submit" style="background:none;border:none;padding:0;width:100%;height:100%;">
-                    <img src="homeImage/Phone.jpg" alt="Mobile Phone">
-                    <div class="event-info">
-                        <h3>Mobile Phone</h3>
-                        <p>Latest Technology</p>
-                    </div>
-                </button>
-            </form>
-            <form action="ViewProduct.jsp" method="get" class="category-card">
-                <button type="submit" style="background:none;border:none;padding:0;width:100%;height:100%;">
-                    <img src="homeImage/AllProduct.jpg" alt="All Products">
-                    <div class="event-info">
-                        <h3>All Products</h3>
-                        <p>Browse All Items</p>
-                    </div>
-                </button>
-            </form>
-        </div>
-    </div>
-    
-    
-    
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        <% if (request.getAttribute("status") != null) { %>
-            var status = '<%= request.getAttribute("status") %>';
-            var message = '<%= request.getAttribute("message") %>';
+			<div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+				<form class="d-flex mx-auto" action="SearchServlet" method="POST"
+					role="search">
+					<input class="form-control me-2" name="searchValue" type="search"
+						placeholder="Search" aria-label="Search">
+					<button class="btn btn-outline-success" type="submit">Search</button>
+				</form>
+
+
+				<div class="nav-icons">
+					<%
+					if (isLoggedIn && user.isSeller()) {
+					%>
+					<form action="SellerViewProducts.jsp">
+						<button class="btn btn-secondary" type="submit" name="add_product">
+							<i class="fa fa-plus"></i> Add Product
+						</button>
+					</form>
+					<%
+					}
+					%>
+					<%
+					if (isLoggedIn && !user.isSeller()) {
+					%>
+					<form action="BecomeASeller.jsp">
+						<button class="btn btn-secondary" type="submit"
+							name="become_seller">Become a Seller</button>
+					</form>
+					<%
+					}
+					%>
+					<%
+					if (!isLoggedIn) {
+					%>
+					<form action="LoginForm.jsp">
+						<button class="btn btn-secondary" type="submit"
+							name="login_signup">Login/Sign Up</button>
+					</form>
+					<%
+					} else {
+					%>
+					<form action="LogoutServlet" method="post">
+						<button class="btn btn-secondary" type="submit" name="logout">Logout</button>
+					</form>
+					<%
+					}
+					%>
+					<form action="UserDetail.jsp">
+						<button class="btn btn-secondary" type="submit" name="profile">
+							<i class="fa fa-user-plus"></i>
+						</button>
+					</form>
+					<form action="ViewCart.jsp">
+						<button class="btn btn-secondary" type="submit" name="cart">
+							<i class="fa fa-shopping-cart"></i>
+						</button>
+					</form>
+					<form action="ViewWishlist.jsp">
+						<button class="btn btn-secondary" type="submit" name="wishlist">
+							<i class="fa fa-heart-o"></i>
+						</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</nav>
+
+
+	<div class="container1">
+		<div class="banner">
+			<h5>
+				<img src="homeImage/logo1.png" alt="Logo ">Logo Text
+			</h5>
+			<div class="clouds">
+				<img src="https://i.postimg.cc/PrMrJc9d/cloud1.png" style="--i: 1"
+					alt="cloud 1 "> <img
+					src="https://i.postimg.cc/fRTW9CQm/cloud2.png" style="--i: 2"
+					alt="cloud 2 "> <img
+					src="https://i.postimg.cc/sg6j9W38/cloud3.png" style="--i: 3"
+					alt="cloud 3 "> <img
+					src="https://i.postimg.cc/sg6j9W38/cloud3.png" style="--i: 8"
+					alt="cloud 4 ">
+			</div>
+		</div>
+	</div>
+
+	<div class="container">
+		<div class="category-grid">
+			<form action="ViewProduct.jsp" method="get" class="category-card">
+				<button type="submit" name="productType" value="watch"
+					style="background: none; border: none; padding: 0; width: 100%; height: 100%;">
+					<img src="homeImage/Watch.jpg" alt="Watch">
+					<div class="event-info">
+						<h3>Watch</h3>
+						<p>Latest Collection</p>
+					</div>
+				</button>
+			</form>
+			<form action="ViewProduct.jsp" method="get" class="category-card">
+				<button type="submit" name="productType" value="shoes"
+					style="background: none; border: none; padding: 0; width: 100%; height: 100%;">
+					<img src="homeImage/Shoes.jpg" alt="Shoes">
+					<div class="event-info">
+						<h3>Shoes</h3>
+						<p>Comfort and Style</p>
+					</div>
+				</button>
+			</form>
+			<form action="ViewProduct.jsp" method="get" class="category-card">
+				<button type="submit" name="productType"
+					value="anime_action_figures"
+					style="background: none; border: none; padding: 0; width: 100%; height: 100%;">
+					<img src="homeImage/Anime 1.jpg" alt="Anime Action Figure">
+					<div class="event-info">
+						<h3>Anime Action Figure</h3>
+						<p>For Collectors</p>
+					</div>
+				</button>
+			</form>
+			<form action="ViewProduct.jsp" method="get" class="category-card">
+				<button type="submit" name="productType" value="headset"
+					style="background: none; border: none; padding: 0; width: 100%; height: 100%;">
+					<img src="homeImage/Headphone.jpg" alt="Headphone">
+					<div class="event-info">
+						<h3>Headphone</h3>
+						<p>Top Quality Sound</p>
+					</div>
+				</button>
+			</form>
+			<form action="ViewProduct.jsp" method="get" class="category-card">
+				<button type="submit" name="productType" value="mobile_phone"
+					style="background: none; border: none; padding: 0; width: 100%; height: 100%;">
+					<img src="homeImage/Phone.jpg" alt="Mobile Phone">
+					<div class="event-info">
+						<h3>Mobile Phone</h3>
+						<p>Latest Technology</p>
+					</div>
+				</button>
+			</form>
+			<form action="ViewProduct.jsp" method="get" class="category-card">
+				<button type="submit"
+					style="background: none; border: none; padding: 0; width: 100%; height: 100%;">
+					<img
+						src="https://img.freepik.com/free-vector/sale-banner_23-2148120029.jpg?ga=GA1.1.1636780205.1718340265&semt=ais_user"
+						alt="All Products">
+					<div class="event-info">
+						<h3>All Products</h3>
+						<p>Browse All Items</p>
+					</div>
+				</button>
+			</form>
+		</div>
+	</div>
+
+
+
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script>
+        <%if (request.getAttribute("status") != null) {%>
+            var status = '<%=request.getAttribute("status")%>';
+            var message = '<%=request.getAttribute("message")%>';
 
             if (status === "success") {
                 Swal.fire({
@@ -447,9 +498,9 @@
                     text: message
                 });
             }
-        <% } %>
+        <%}%>
     </script>
-    <script>
+	<script>
         document.addEventListener('DOMContentLoaded', function () {
             function updateCartNotification(count) {
                 const cartButton = document.querySelector('.fa-shopping-cart');
@@ -461,7 +512,7 @@
                 }
             }
             
-            updateCartNotification(<%= cartItemCount %>); // Update cart count on page load
+            updateCartNotification(<%=cartItemCount%>); // Update cart count on page load
         });
         
         function updateWishlistNotification(count) {
@@ -475,14 +526,14 @@
         }
         
         document.addEventListener('DOMContentLoaded', function () {
-            const wishlistItemCount = <%= wishlistItemCount %>;
+            const wishlistItemCount = <%=wishlistItemCount%>;
             updateWishlistNotification(wishlistItemCount);
         });
         
     </script>
-    
-    <script type="text/javascript">
-        var registrationStatus = '<%= request.getParameter("registration") %>';
+
+	<script type="text/javascript">
+        var registrationStatus = '<%=request.getParameter("registration")%>';
 
         if (registrationStatus === 'success') {
             Swal.fire({
@@ -537,6 +588,9 @@
       text.style.marginBottom = `${value * 2}px`;
     });
   </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+		crossorigin="anonymous"></script>
 </body>
 </html>

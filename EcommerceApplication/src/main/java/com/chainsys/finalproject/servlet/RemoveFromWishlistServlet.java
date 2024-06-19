@@ -25,49 +25,58 @@ public class RemoveFromWishlistServlet extends HttpServlet {
      */
     public RemoveFromWishlistServlet() {
         super();
-        // TODO Auto-generated constructor stub
+
     }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+    @Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String wishlistIdStr = request.getParameter("wishlistId");
+	private static final String STATUS_FAILURE = "failure";
+    private static final String PARAM_WISHLIST_ID = "wishlistId";
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String wishlistIdStr = request.getParameter(PARAM_WISHLIST_ID);
 
         if (wishlistIdStr == null) {
-            response.getWriter().write("failure");
+            response.getWriter().write(STATUS_FAILURE);
             return;
         }
 
         try {
             int wishlistId = Integer.parseInt(wishlistIdStr);
+            boolean deletionSuccess = deleteWishlist(wishlistId);
 
-            try (Connection conn = Connectivity.getConnection()) {
-                PreparedStatement stmt = conn.prepareStatement("DELETE FROM Wishlist WHERE wishlist_id = ?");
-                stmt.setInt(1, wishlistId);
-                int rowsDeleted = stmt.executeUpdate();
-
-                if (rowsDeleted > 0) {
-                    response.getWriter().write("success");
-                } else {
-                    response.getWriter().write("failure");
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                response.getWriter().write("failure");
+            if (deletionSuccess) {
+                response.getWriter().write("success");
+            } else {
+                response.getWriter().write(STATUS_FAILURE);
             }
-        } catch (NumberFormatException e) {
+
+        } catch (NumberFormatException | SQLException e) {
             e.printStackTrace();
-            response.getWriter().write("failure");
+            response.getWriter().write(STATUS_FAILURE);
         }
     }
 
+    private boolean deleteWishlist(int wishlistId) throws SQLException {
+        String deleteQuery = "DELETE FROM Wishlist WHERE wishlist_id = ?";
+        try (Connection conn = Connectivity.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(deleteQuery)) {
+            
+            stmt.setInt(1, wishlistId);
+            int rowsDeleted = stmt.executeUpdate();
+            return rowsDeleted > 0;
+        }
+    }
 }

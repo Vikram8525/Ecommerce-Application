@@ -386,6 +386,9 @@ body {
 	String productType = request.getParameter("productType");
 	String minPriceStr = request.getParameter("minPrice");
 	String maxPriceStr = request.getParameter("maxPrice");
+	String searchValue = request.getParameter("searchValue");
+	System.out.println(productType);
+	
 
 	double minPrice = minPriceStr != null && !minPriceStr.isEmpty() ? Double.parseDouble(minPriceStr) : 0;
 	double maxPrice = maxPriceStr != null && !maxPriceStr.isEmpty() ? Double.parseDouble(maxPriceStr) : Double.MAX_VALUE;
@@ -415,17 +418,34 @@ body {
 		}
 
 		StringBuilder query = new StringBuilder("SELECT * FROM Products WHERE product_price BETWEEN ? AND ? AND is_deleted = 0 ");
+		int parameterIndex = 2; // This will keep track of the index of the parameter
+
+		// Check if productType is not empty
 		if (productType != null && !productType.isEmpty()) {
-			query.append(" AND category_name = ?");
+		    query.append(" AND category_name = ?");
+		    parameterIndex++;
+		}
+
+		// Check if searchValue is not empty
+		if (searchValue != null && !searchValue.isEmpty()) {
+		    query.append(" AND product_name LIKE ?");
+		    parameterIndex++;
 		}
 
 		PreparedStatement pstmt = conn.prepareStatement(query.toString());
 		pstmt.setDouble(1, minPrice);
 		pstmt.setDouble(2, maxPrice);
 
+		// Set productType parameter, if applicable
 		if (productType != null && !productType.isEmpty()) {
-			pstmt.setString(3, productType);
+		    pstmt.setString(parameterIndex , productType);
 		}
+
+		// Set searchValue parameter, if applicable
+		if (searchValue != null && !searchValue.isEmpty()) {
+		    pstmt.setString(parameterIndex, "%" + searchValue + "%");
+		}
+
 
 		ResultSet rs = pstmt.executeQuery();
 
@@ -471,6 +491,7 @@ body {
 			String sellerName = (String) product.get("user_name");
 			boolean isBestSeller = (boolean) product.get("is_best_seller");
 	%>
+	
 	<div class="card" onclick="redirectToProductDetails(<%=productId%>)">
 		<%
 		if (isBestSeller) {
@@ -480,7 +501,7 @@ body {
 		}
 		%>
 		<img src="data:image/jpeg;base64,<%=base64Image%>"
-			alt="Product Image">
+			alt="Product ">
 		<h3><%=productName%></h3>
 		<p class="price">
 			Rs.<%=productPrice%></p>

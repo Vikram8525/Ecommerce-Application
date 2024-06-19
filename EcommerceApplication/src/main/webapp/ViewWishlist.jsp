@@ -233,7 +233,7 @@
             <% for (Map<String, Object> item : wishlistItems) { %>
                 <div class="col-md-4 mb-3">
                     <div class="card">
-                        <img src="data:image/jpeg;base64,<%= item.get("product_image") %>" class="card-img-top" alt="Product Image">
+                        <img src="data:image/jpeg;base64,<%= item.get("product_image") %>" class="card-img-top" alt="Product">
                         <div class="card-body">
                             <h5 class="card-title"><%= item.get("product_name") %></h5>
                             <p class="card-text">Price: Rs.<%= item.get("product_price") %></p>

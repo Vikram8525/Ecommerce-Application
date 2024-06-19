@@ -11,7 +11,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import com.chainsys.finalproject.util.Connectivity;
 
@@ -27,20 +26,22 @@ public class UpdateCartServlet extends HttpServlet {
      */
     public UpdateCartServlet() {
         super();
-        // TODO Auto-generated constructor stub
+
     }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+    @Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
+    @Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/plain");
         PrintWriter out = response.getWriter();
@@ -48,8 +49,9 @@ public class UpdateCartServlet extends HttpServlet {
         int cartId = Integer.parseInt(request.getParameter("cartId"));
         int newQuantity = Integer.parseInt(request.getParameter("newQuantity"));
 
-        try (Connection conn = Connectivity.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("UPDATE Cart SET quantity = ? WHERE cart_id = ?");
+        try (Connection conn = Connectivity.getConnection();
+             PreparedStatement stmt = conn.prepareStatement("UPDATE Cart SET quantity = ? WHERE cart_id = ?")) {
+
             stmt.setInt(1, newQuantity);
             stmt.setInt(2, cartId);
             int rowsUpdated = stmt.executeUpdate();

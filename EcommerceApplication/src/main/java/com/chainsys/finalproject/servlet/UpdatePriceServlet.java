@@ -25,40 +25,44 @@ public class UpdatePriceServlet extends HttpServlet {
      */
     public UpdatePriceServlet() {
         super();
-        // TODO Auto-generated constructor stub
+
     }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+    @Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
-	 protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	        int productId = Integer.parseInt(request.getParameter("productId"));
-	        double newPrice = Double.parseDouble(request.getParameter("newPrice"));
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	    int productId = Integer.parseInt(request.getParameter("productId"));
+	    double newPrice = Double.parseDouble(request.getParameter("newPrice"));
 
-	        // Perform the database update operation here
-
-	        try (Connection conn = Connectivity.getConnection()) {
-	            String sql = "UPDATE Products SET product_price = ? WHERE product_id = ?";
-	            PreparedStatement stmt = conn.prepareStatement(sql);
-	            stmt.setDouble(1, newPrice);
-	            stmt.setInt(2, productId);
-	            int rowsUpdated = stmt.executeUpdate();
-	            if (rowsUpdated > 0) {
-	                response.sendRedirect("SellerViewProducts.jsp?status=success");
-	            } else {
-	                response.sendRedirect("SellerViewProducts.jsp?status=failed");
-	            }
-	        } catch (SQLException e) {
-	            e.printStackTrace();
+	    try (Connection conn = Connectivity.getConnection();
+	         PreparedStatement stmt = conn.prepareStatement("UPDATE Products SET product_price = ? WHERE product_id = ?")) {
+	        
+	        stmt.setDouble(1, newPrice);
+	        stmt.setInt(2, productId);
+	        
+	        int rowsUpdated = stmt.executeUpdate();
+	        
+	        if (rowsUpdated > 0) {
+	            response.sendRedirect("SellerViewProducts.jsp?status=success");
+	        } else {
 	            response.sendRedirect("SellerViewProducts.jsp?status=failed");
 	        }
+	        
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        response.sendRedirect("SellerViewProducts.jsp?status=failed");
 	    }
+	}
+
 }

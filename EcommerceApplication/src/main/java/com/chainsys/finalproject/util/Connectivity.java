@@ -4,8 +4,12 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-
 public class Connectivity {
+    // Private constructor to hide the implicit public one
+    private Connectivity() {
+        throw new IllegalStateException("Utility class");
+    }
+
     static {
         try {
             // Load MySQL JDBC driver class
@@ -22,5 +26,4 @@ public class Connectivity {
         String password = "Vikram@8525"; // Database password
         return DriverManager.getConnection(url, user, password);
     }
-   
 }
