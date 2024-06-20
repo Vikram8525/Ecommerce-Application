@@ -120,9 +120,9 @@
     <div class="left-side"></div>
     <div class="right-side">
         <div class="container">
-            <h1>Select Payment Method</h1>
+            <h1>Select Wallet Type</h1>
             <div class="payment-methods">
-                <form id="amazon-pay-form" action="OrderConfirmation.jsp" method="post">
+                <form id="amazon-pay-form" action="Wallet.jsp" method="post">
                     <input type="hidden" name="userId" value="<%= request.getParameter("userId") %>">
                     <input type="hidden" name="paymentMethod" value="Amazon Pay">
                     <input type="radio" id="amazon-pay-radio" name="selectedPaymentMethod" value="Amazon Pay" onchange="document.getElementById('amazon-pay-form').submit()">
@@ -131,7 +131,7 @@
                         <span>Amazon Pay</span>
                     </label>
                 </form>
-                <form id="google-pay-form" action="OrderConfirmation.jsp" method="post">
+                <form id="google-pay-form" action="Wallet.jsp" method="post">
                     <input type="hidden" name="userId" value="<%= request.getParameter("userId") %>">
                     <input type="hidden" name="paymentMethod" value="Google Pay">
                     <input type="radio" id="google-pay-radio" name="selectedPaymentMethod" value="Google Pay" onchange="document.getElementById('google-pay-form').submit()">
@@ -140,7 +140,7 @@
                         <span>Google Pay</span>
                     </label>
                 </form>
-                <form id="credit-card-form" action="OrderConfirmation.jsp" method="post">
+                <form id="credit-card-form" action="Wallet.jsp" method="post">
                     <input type="hidden" name="userId" value="<%= request.getParameter("userId") %>">
                     <input type="hidden" name="paymentMethod" value="Credit Card">
                     <input type="radio" id="credit-card-radio" name="selectedPaymentMethod" value="Credit Card" onchange="document.getElementById('credit-card-form').submit()">
@@ -149,7 +149,7 @@
                         <span>Credit Card</span>
                     </label>
                 </form>
-                <form id="debit-card-form" action="OrderConfirmation.jsp" method="post">
+                <form id="debit-card-form" action="Wallet.jsp" method="post">
                     <input type="hidden" name="userId" value="<%= request.getParameter("userId") %>">
                     <input type="hidden" name="paymentMethod" value="Debit Card">
                     <input type="radio" id="debit-card-radio" name="selectedPaymentMethod" value="Debit Card" onchange="document.getElementById('debit-card-form').submit()">
@@ -158,7 +158,7 @@
                         <span>Debit Card</span>
                     </label>
                 </form>
-                <form id="phone-pay-form" action="OrderConfirmation.jsp" method="post">
+                <form id="phone-pay-form" action="Wallet.jsp" method="post">
                     <input type="hidden" name="userId" value="<%= request.getParameter("userId") %>">
                     <input type="hidden" name="paymentMethod" value="PhonePe">
                     <input type="radio" id="phone-pay-radio" name="selectedPaymentMethod" value="PhonePe" onchange="document.getElementById('phone-pay-form').submit()">

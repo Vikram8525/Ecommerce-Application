@@ -1,5 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+    <%@ page
+	import="java.util.Base64, java.sql.*, java.io.*, java.util.*, com.chainsys.finalproject.util.Connectivity"%>
+    <%@page import="com.chainsys.finalproject.model.User"%>
+<%@ page import="javax.servlet.http.HttpSession" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,7 +19,7 @@
 
   body {
     min-height: 100vh;
-    background: #ffb536;
+    background: #ffd080;
     display: flex;
     align-items: center;
     justify-content: center; 
@@ -144,17 +148,32 @@
 </head>
 <body>
 
+<%
+  // Retrieve the session object
+  User currentUser = (User) session.getAttribute("user");
+    if (currentUser == null) {
+        String requestURI = request.getRequestURI() + "?" + request.getQueryString();
+        session.setAttribute("redirectUrl", requestURI);
+        response.sendRedirect("LoginForm.jsp");
+        return;
+    }
+    
+    int userId = currentUser.getUserId();
+%>
+
 <div style="display: flex;">
 
 <div class="card" style="background-image: url('https://img.freepik.com/free-photo/location-symbol-with-building_23-2150169872.jpg?ga=GA1.1.1636780205.1718340265&semt=sph');" onclick="submitForm('form1');">
-  <form id="form1" action="AddProfile.jsp" >
+  <form id="form1" action="AddProfile.jsp">
+    <input type="hidden" name="userId" value="<%= userId %>">
     <input type="hidden" name="card1" value="card1">
   </form>
   <span>Add Address</span>
 </div>
 
 <div class="card" style="background-image: url('https://img.freepik.com/free-vector/cashback-concept-style_23-2148458404.jpg?ga=GA1.1.1636780205.1718340265&semt=ais_user');" onclick="submitForm('form2');">
-  <form id="form2" action="check-wallet-balance.php" method="post">
+  <form id="form2" action="AddBalance.jsp" method="post">
+    <input type="hidden" name="userId" value="<%= userId %>">
     <input type="hidden" name="card2" value="card2">
   </form>
   <span>Check Wallet Balance</span>
@@ -162,13 +181,13 @@
 
 <div class="card" style="background-image: url('https://img.freepik.com/free-vector/appointment-booking-with-smartphone_23-2148554312.jpg');" onclick="submitForm('form3');">
   <form id="form3" action="order-details.php" method="post">
+    <input type="hidden" name="userId" value="<%= userId %>">
     <input type="hidden" name="card3" value="card3">
   </form>
   <span>Order History</span>
 </div>
 
 </div>
-
 
 <script>
   function submitForm(formId) {

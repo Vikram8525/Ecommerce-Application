@@ -436,12 +436,11 @@ body {
 		pstmt.setDouble(1, minPrice);
 		pstmt.setDouble(2, maxPrice);
 
-		// Set productType parameter, if applicable
+		
 		if (productType != null && !productType.isEmpty()) {
 		    pstmt.setString(parameterIndex , productType);
 		}
 
-		// Set searchValue parameter, if applicable
 		if (searchValue != null && !searchValue.isEmpty()) {
 		    pstmt.setString(parameterIndex, "%" + searchValue + "%");
 		}
